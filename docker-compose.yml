@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  api-client:
+    build:
+      context: ./mscliente
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mydatabase
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+    ports:
+      - "3000:8082"
+    depends_on:
+      - postgres-client
+    networks:
+      - my_network
+
+  postgres-client:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: 'mydatabase'
+      POSTGRES_USER: 'myuser'
+      POSTGRES_PASSWORD: 'secret'
+    ports:
+      - '5432:5432'
+    networks:
+      - my_network
+
+  api-catalogo:
+    build:
+      context: ./mscatalogoprodutos
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mydatabase
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+    ports:
+      - "3001:8083"
+    depends_on:
+      - postgres-client
+    networks:
+      - my_network
+
+  postgres-catalogo:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: 'mydatabase'
+      POSTGRES_USER: 'myuser'
+      POSTGRES_PASSWORD: 'secret'
+    ports:
+      - '5433:5433'
+    networks:
+      - my_network
+
+  api-logistica:
+    build:
+      context: ./mslogisticaentrega
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mydatabase
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+    ports:
+      - "3002:8084"
+    depends_on:
+      - postgres-client
+    networks:
+      - my_network
+
+  postgres-logistica:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: 'mydatabase'
+      POSTGRES_USER: 'myuser'
+      POSTGRES_PASSWORD: 'secret'
+    ports:
+      - '5434:5434'
+    networks:
+      - my_network
+
+  api-pedido:
+    build:
+      context: ./msgestaopedidos
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mydatabase
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+    ports:
+      - "3005:8085"
+    depends_on:
+      - postgres-client
+    networks:
+      - my_network
+
+  postgres-pedido:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: 'mydatabase'
+      POSTGRES_USER: 'myuser'
+      POSTGRES_PASSWORD: 'secret'
+    ports:
+      - '5435:5435'
+    networks:
+      - my_network
+
+networks:
+  my_network:
